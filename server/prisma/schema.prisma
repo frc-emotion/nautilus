@@ -12,3 +12,91 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Role {
+  id          Int    @id @unique @default(autoincrement())
+  name        String
+  users       User[]
+  permissions Json
+}
+
+model Season {
+  year         Int           @id @unique
+  name         String
+  competitions Competition[]
+  matchSchema  Json
+  pitSchema    Json
+}
+
+model Competition {
+  id         Int     @id @unique @default(autoincrement())
+  season     Season  @relation(fields: [seasonYear], references: [year])
+  seasonYear Int
+  name       String
+  matches    Match[]
+  pits       Pit[]
+}
+
+model Match {
+  id            Int         @id @unique @default(autoincrement())
+  Competition   Competition @relation(fields: [competitionId], references: [id])
+  User          User        @relation(fields: [createdBy], references: [id])
+  createdBy     String      @db.Uuid
+  competitionId Int
+  data          Json
+}
+
+model Pit {
+  id            Int         @id @unique @default(autoincrement())
+  Competition   Competition @relation(fields: [competitionId], references: [id])
+  User          User        @relation(fields: [createdBy], references: [id])
+  createdBy     String      @db.Uuid
+  competitionId Int
+  data          Json
+}
+
+model AttendancePeriods {
+  id       Int       @id @unique @default(autoincrement())
+  meetings Meeting[]
+  name     String
+}
+
+model Meeting {
+  id                Int               @id @unique @default(autoincrement())
+  AttendancePeriods AttendancePeriods @relation(fields: [attendancePeriod], references: [id])
+  Creator           User              @relation("MeetingCreator", fields: [createdBy], references: [id])
+  AttendedMeeting   AttendedMeeting[]
+  createdBy         String            @db.Uuid
+  name              String
+  type              String
+  credits           Int
+  startTime         DateTime
+  endTime           DateTime
+  attendancePeriod  Int
+}
+
+model AttendedMeeting {
+  id         Int     @id @unique @default(autoincrement())
+  Meeting    Meeting @relation(fields: [meetingId], references: [id])
+  Attendee   User    @relation("MeetingAttendee", fields: [attendeeId], references: [id])
+  Logger     User    @relation("MeetingLogger", fields: [loggerId], references: [id])
+  meetingId  Int
+  attendeeId String  @db.Uuid
+  loggerId   String  @db.Uuid
+}
+
+model User {
+  id               String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  AttendedMeetings AttendedMeeting[] @relation("MeetingAttendee")
+  LoggerMeetings   AttendedMeeting[] @relation("MeetingLogger")
+  CreatedMeetings  Meeting[]         @relation("MeetingCreator")
+  Match            Match[]
+  Pit              Pit[]
+  email            String            @unique
+  firstname        String
+  lastname         String
+  phone            String            @unique
+  password         String
+  grade            Int
+  roles            Role[]
+}
