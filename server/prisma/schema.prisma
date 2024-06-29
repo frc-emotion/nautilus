@@ -57,8 +57,21 @@ model Pit {
 
 model AttendancePeriods {
   id       Int       @id @unique @default(autoincrement())
+  ManualHourAdjustment ManualHourAdjustment[]
   meetings Meeting[]
   name     String
+}
+
+model ManualHourAdjustment {
+    id         Int     @id @unique @default(autoincrement())
+    User       User    @relation(fields: [userId], references: [id])
+    AttendancePeriods AttendancePeriods @relation(fields: [attendancePeriod], references: [id])
+    userId     String  @db.Uuid
+    attendancePeriod Int
+    hours      Int
+    reason     String
+    adjustedBy String  @db.Uuid
+    timestamp  DateTime
 }
 
 model Meeting {
@@ -83,6 +96,7 @@ model AttendedMeeting {
   meetingId  Int
   attendeeId String  @db.Uuid
   loggerId   String  @db.Uuid
+  loggedTimestamp DateTime
 }
 
 model User {
@@ -90,9 +104,11 @@ model User {
   AttendedMeetings AttendedMeeting[] @relation("MeetingAttendee")
   LoggerMeetings   AttendedMeeting[] @relation("MeetingLogger")
   CreatedMeetings  Meeting[]         @relation("MeetingCreator")
+  ManualHourAdjustments ManualHourAdjustment[]
   Match            Match[]
   Pit              Pit[]
   email            String            @unique
+  username         String            @unique
   firstname        String
   lastname         String
   phone            String            @unique

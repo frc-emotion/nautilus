@@ -55,6 +55,19 @@ CREATE TABLE "AttendancePeriods" (
 );
 
 -- CreateTable
+CREATE TABLE "ManualHourAdjustment" (
+    "id" SERIAL NOT NULL,
+    "userId" UUID NOT NULL,
+    "attendancePeriod" INTEGER NOT NULL,
+    "hours" INTEGER NOT NULL,
+    "reason" TEXT NOT NULL,
+    "adjustedBy" UUID NOT NULL,
+    "timestamp" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ManualHourAdjustment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Meeting" (
     "id" SERIAL NOT NULL,
     "createdBy" UUID NOT NULL,
@@ -74,6 +87,7 @@ CREATE TABLE "AttendedMeeting" (
     "meetingId" INTEGER NOT NULL,
     "attendeeId" UUID NOT NULL,
     "loggerId" UUID NOT NULL,
+    "loggedTimestamp" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "AttendedMeeting_pkey" PRIMARY KEY ("id")
 );
@@ -116,6 +130,9 @@ CREATE UNIQUE INDEX "Pit_id_key" ON "Pit"("id");
 CREATE UNIQUE INDEX "AttendancePeriods_id_key" ON "AttendancePeriods"("id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "ManualHourAdjustment_id_key" ON "ManualHourAdjustment"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Meeting_id_key" ON "Meeting"("id");
 
 -- CreateIndex
@@ -147,6 +164,12 @@ ALTER TABLE "Pit" ADD CONSTRAINT "Pit_competitionId_fkey" FOREIGN KEY ("competit
 
 -- AddForeignKey
 ALTER TABLE "Pit" ADD CONSTRAINT "Pit_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ManualHourAdjustment" ADD CONSTRAINT "ManualHourAdjustment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ManualHourAdjustment" ADD CONSTRAINT "ManualHourAdjustment_attendancePeriod_fkey" FOREIGN KEY ("attendancePeriod") REFERENCES "AttendancePeriods"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Meeting" ADD CONSTRAINT "Meeting_attendancePeriod_fkey" FOREIGN KEY ("attendancePeriod") REFERENCES "AttendancePeriods"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
