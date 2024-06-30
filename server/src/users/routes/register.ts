@@ -46,15 +46,11 @@ const register = async (req: Request, res: Response) => {
                     email,
                 },
             });
-
             if (user) {
+                let newUser = user as any;
+                delete newUser.password;
                 return res.status(201).json({
-                    id: user.id,
-                    firstname: user.firstname,
-                    lastname: user.lastname,
-                    email: user.email,
-                    phone: user.phone,
-                    grade: user.grade,
+                    ...newUser,
                     token: generateToken(user.id),
                 });
             } else {

@@ -1,13 +1,21 @@
-import express, { Express } from "express";
+import express from "express";
 import dotenv from "dotenv";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 
 const colors = require("colors");
 const bodyParser = require("body-parser");
 
 dotenv.config();
 
-const app: Express = express();
+declare global {
+    namespace Express {
+        interface Request {
+            user?: User;
+        }
+    }
+}
+
+const app = express();
 export const prisma = new PrismaClient();
 const port = process.env.PORT || 3000;
 
