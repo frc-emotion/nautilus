@@ -20,4 +20,20 @@ const deleteUser = async (req: Request, res: Response) => {
     }
 }
 
-export default deleteUser;
+const deleteSelf = async (req: Request, res: Response) => {
+    try {
+        const user = await prisma.user.delete({
+            where: {
+                id: req.user!.id
+            },
+        });
+
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(400).json({
+            message: "User not found",
+        });
+    }
+}
+
+export { deleteUser, deleteSelf }
