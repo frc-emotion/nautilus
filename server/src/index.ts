@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient, User, Role } from "@prisma/client";
 
 const colors = require("colors");
 const bodyParser = require("body-parser");
@@ -10,7 +10,7 @@ dotenv.config();
 declare global {
     namespace Express {
         interface Request {
-            user?: User;
+            user?: User & { roles?: any[] };
         }
     }
 }

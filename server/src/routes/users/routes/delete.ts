@@ -1,4 +1,4 @@
-import { prisma } from "../../index";
+import { prisma } from "../../../index";
 import { Request, Response } from "express";
 
 // assume protected
@@ -8,7 +8,7 @@ const deleteUser = async (req: Request, res: Response) => {
     try {
         const user = await prisma.user.delete({
             where: {
-                id: id
+                id: id,
             },
         });
 
@@ -18,13 +18,13 @@ const deleteUser = async (req: Request, res: Response) => {
             message: "User not found",
         });
     }
-}
+};
 
 const deleteSelf = async (req: Request, res: Response) => {
     try {
         const user = await prisma.user.delete({
             where: {
-                id: req.user!.id
+                id: req.user!.id,
             },
         });
 
@@ -34,6 +34,6 @@ const deleteSelf = async (req: Request, res: Response) => {
             message: "User not found",
         });
     }
-}
+};
 
-export { deleteUser, deleteSelf }
+export { deleteUser, deleteSelf };

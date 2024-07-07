@@ -1,4 +1,4 @@
-import { prisma } from "../../index";
+import { prisma } from "../../../index";
 import { Request, Response } from "express";
 
 const getAllUsers = async (req: Request, res: Response) => {
@@ -10,15 +10,15 @@ const getAllUsers = async (req: Request, res: Response) => {
             message: "No users found",
         });
     }
-}
+};
 
 const getUserById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const user = await prisma.user.findUniqueOrThrow({
             where: {
-                id: id
-            }
+                id: id,
+            },
         });
         res.status(200).json(user);
     } catch (err) {
@@ -26,6 +26,6 @@ const getUserById = async (req: Request, res: Response) => {
             message: "User not found",
         });
     }
-}
+};
 
-export { getAllUsers, getUserById }
+export { getAllUsers, getUserById };

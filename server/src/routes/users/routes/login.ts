@@ -1,4 +1,4 @@
-import { prisma } from "../../index";
+import { prisma } from "../../../index";
 import { Request, Response } from "express";
 import { generateToken, validateEmail } from "../helpers";
 import bcrypt from "bcrypt";

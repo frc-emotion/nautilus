@@ -13,20 +13,43 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PermissionCategory {
+  USER
+  ROLES
+}
+
+model Permission {
+  id             Int                @id @unique @default(autoincrement())
+  name           String             @unique
+  description    String
+  category       PermissionCategory
+  RolePermission RolePermission[]
+}
+
+model RolePermission {
+  roleId       Int
+  permissionId Int
+  granted      Boolean
+  role         Role       @relation(fields: [roleId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
+}
+
 model Role {
-  id          Int    @id @unique @default(autoincrement())
-  name        String
-  users       UserRole[]
-  permissions Json
+  id             Int              @id @unique @default(autoincrement())
+  name           String
+  users          UserRole[]
+  RolePermission RolePermission[]
 }
 
 model UserRole {
-    userId String @db.Uuid
-    roleId Int
-    user User @relation(fields: [userId], references: [id])
-    role Role @relation(fields: [roleId], references: [id])
+  userId String @db.Uuid
+  roleId Int
+  user   User   @relation(fields: [userId], references: [id])
+  role   Role   @relation(fields: [roleId], references: [id])
 
-    @@id([userId, roleId])
+  @@id([userId, roleId])
 }
 
 model Season {
@@ -65,22 +88,22 @@ model Pit {
 }
 
 model AttendancePeriods {
-  id       Int       @id @unique @default(autoincrement())
+  id                   Int                    @id @unique @default(autoincrement())
   ManualHourAdjustment ManualHourAdjustment[]
-  meetings Meeting[]
-  name     String
+  meetings             Meeting[]
+  name                 String
 }
 
 model ManualHourAdjustment {
-    id         Int     @id @unique @default(autoincrement())
-    User       User    @relation(fields: [userId], references: [id])
-    AttendancePeriods AttendancePeriods @relation(fields: [attendancePeriod], references: [id])
-    userId     String  @db.Uuid
-    attendancePeriod Int
-    hours      Int
-    reason     String
-    adjustedBy String  @db.Uuid
-    timestamp  DateTime
+  id                Int               @id @unique @default(autoincrement())
+  User              User              @relation(fields: [userId], references: [id])
+  AttendancePeriods AttendancePeriods @relation(fields: [attendancePeriod], references: [id])
+  userId            String            @db.Uuid
+  attendancePeriod  Int
+  hours             Int
+  reason            String
+  adjustedBy        String            @db.Uuid
+  timestamp         DateTime
 }
 
 model Meeting {
@@ -98,30 +121,32 @@ model Meeting {
 }
 
 model AttendedMeeting {
-  id         Int     @id @unique @default(autoincrement())
-  Meeting    Meeting @relation(fields: [meetingId], references: [id])
-  Attendee   User    @relation("MeetingAttendee", fields: [attendeeId], references: [id])
-  Logger     User    @relation("MeetingLogger", fields: [loggerId], references: [id])
-  meetingId  Int
-  attendeeId String  @db.Uuid
-  loggerId   String  @db.Uuid
+  id              Int      @id @unique @default(autoincrement())
+  Meeting         Meeting  @relation(fields: [meetingId], references: [id])
+  Attendee        User     @relation("MeetingAttendee", fields: [attendeeId], references: [id])
+  Logger          User     @relation("MeetingLogger", fields: [loggerId], references: [id])
+  meetingId       Int
+  attendeeId      String   @db.Uuid
+  loggerId        String   @db.Uuid
   loggedTimestamp DateTime
 }
 
 model User {
-  id               String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  AttendedMeetings AttendedMeeting[] @relation("MeetingAttendee")
-  LoggerMeetings   AttendedMeeting[] @relation("MeetingLogger")
-  CreatedMeetings  Meeting[]         @relation("MeetingCreator")
+  id                    String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  AttendedMeetings      AttendedMeeting[]      @relation("MeetingAttendee")
+  LoggerMeetings        AttendedMeeting[]      @relation("MeetingLogger")
+  CreatedMeetings       Meeting[]              @relation("MeetingCreator")
   ManualHourAdjustments ManualHourAdjustment[]
-  Match            Match[]
-  Pit              Pit[]
-  email            String            @unique
-  username         String            @unique
-  firstname        String
-  lastname         String
-  phone            String            @unique
-  password         String
-  grade            Int
-  roles            UserRole[]
+  Match                 Match[]
+  Pit                   Pit[]
+  email                 String                 @unique
+  username              String                 @unique
+  firstname             String
+  lastname              String
+  phone                 String                 @unique
+  password              String
+  bio                   String?
+  tagline               String?
+  gradYear              Int?
+  roles                 UserRole[]
 }

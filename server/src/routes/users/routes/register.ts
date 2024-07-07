@@ -1,22 +1,13 @@
-import { prisma } from "../..";
+import { prisma } from "../../..";
 import { Request, Response } from "express";
 import { generateToken } from "../helpers";
 import bcrypt from "bcrypt";
 
 const register = async (req: Request, res: Response) => {
-    const { firstname, lastname, username, email, phone, password, grade } =
-        req.body;
+    const { firstname, lastname, username, email, phone, password } = req.body;
 
     // require all fields
-    if (
-        !firstname ||
-        !lastname ||
-        !username ||
-        !email ||
-        !phone ||
-        !password ||
-        !grade
-    ) {
+    if (!firstname || !lastname || !username || !email || !phone || !password) {
         return res.status(400).json({ message: "Please fill out all fields" });
     }
 
@@ -31,7 +22,6 @@ const register = async (req: Request, res: Response) => {
     // attempt to create user & return
     else {
         try {
-            const parsedGrade: number = parseInt(grade, 10);
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -42,7 +32,6 @@ const register = async (req: Request, res: Response) => {
                     username,
                     phone,
                     password: hashedPassword,
-                    grade: parsedGrade,
                     email,
                 },
             });
