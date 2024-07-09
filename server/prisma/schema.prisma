@@ -22,7 +22,7 @@ model Permission {
   id             Int                @id @unique @default(autoincrement())
   name           String             @unique
   description    String
-  category       PermissionCategory
+  category       PermissionCategory?
   RolePermission RolePermission[]
 }
 
