@@ -1,9 +1,11 @@
 import Navbar from "@/components/nav/Navbar";
+import PageTitle from "@/components/properties/PageTitle";
 
 export default function Home() {
     return (
-        <div>
+        <>
+            <PageTitle title="Home" />
             <Navbar />
-        </div>
+        </>
     );
 }
