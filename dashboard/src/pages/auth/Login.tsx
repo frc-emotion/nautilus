@@ -15,6 +15,8 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
+import PageTitle from "@/components/properties/PageTitle";
+import { useAuth } from "@/context/auth";
 
 const formSchema = z.object({
     username: z.string(),
@@ -23,6 +25,8 @@ const formSchema = z.object({
 
 function LoginForm() {
     const [formError, setFormError] = useState("");
+    const navigate = useNavigate();
+    const { refreshUser } = useAuth();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -33,27 +37,32 @@ function LoginForm() {
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
+        try {
+            console.log("logging in");
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/users/login`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(values),
+                    credentials: "include",
+                }
+            );
 
-        const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/users/login`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(values),
-            }
-        );
-
-        if (!response.ok) {
             const data = await response.json();
-            setFormError(data.message);
-        } else {
-            setFormError("");
-        }
 
-        console.log(response);
+            if (!response.ok) {
+                setFormError(data.message);
+            } else {
+                setFormError("");
+                refreshUser();
+                navigate("/dashboard");
+            }
+        } catch (error) {
+            setFormError(`Unknown error: ${error}`);
+        }
     }
 
     return (
@@ -110,33 +119,40 @@ function LoginForm() {
 function Login() {
     const navigate = useNavigate();
     return (
-        <div>
-            <button
-                onClick={() => navigate(-1)}
-                className="absolute left-6 top-6"
-            >
-                <div className="sr-only">Go back</div>
-                <ArrowLeftIcon width="18.75" height="18.75" />
-            </button>
-            <div className="flex h-screen items-center justify-center px-5">
-                <div className="w-full max-w-md space-y-8">
-                    <h1 className="text-center text-3xl font-bold">Login</h1>
-                    <LoginForm />
-                    <div className="flex w-full flex-row justify-between">
-                        <Button
-                            variant="link"
-                            disabled={true}
-                            className="cursor-not-allowed"
-                        >
-                            <Link to="/auth/forgot">Forgot Password?</Link>
-                        </Button>
-                        <Button variant="link">
-                            <Link to="/auth/register">Create an Account</Link>
-                        </Button>
+        <>
+            <PageTitle title="Login" />
+            <div>
+                <button
+                    onClick={() => navigate(-1)}
+                    className="absolute left-6 top-6"
+                >
+                    <div className="sr-only">Go back</div>
+                    <ArrowLeftIcon width="18.75" height="18.75" />
+                </button>
+                <div className="flex h-screen items-center justify-center px-5">
+                    <div className="w-full max-w-md space-y-8">
+                        <h1 className="text-center text-3xl font-bold">
+                            Login
+                        </h1>
+                        <LoginForm />
+                        <div className="flex w-full flex-row justify-between">
+                            <Button
+                                variant="link"
+                                disabled={true}
+                                className="cursor-not-allowed"
+                            >
+                                <Link to="/auth/forgot">Forgot Password?</Link>
+                            </Button>
+                            <Button variant="link">
+                                <Link to="/auth/register">
+                                    Create an Account
+                                </Link>
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 

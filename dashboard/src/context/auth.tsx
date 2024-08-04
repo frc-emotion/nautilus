@@ -1,9 +1,8 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import Cookies from "js-cookie";
 
 interface AuthContextType {
-    token: string | null;
-    setToken: (token: string | null) => void;
+    user: string | null;
+    refreshUser: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -11,29 +10,39 @@ const AuthContext = createContext<AuthContextType | null>(null);
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
-    const [token, setTokenState] = useState<string | null>(null);
+    const [user, setUser] = useState<string | null>(null);
 
-    const setToken = (newToken: string | null) => {
-        setTokenState(newToken);
-        if (newToken) {
-            Cookies.set("token", newToken, {
-                secure: true,
-                sameSite: "strict",
-            });
+    async function fetchUser() {
+        console.log("fetching");
+        const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/users/me`,
+            {
+                method: "GET",
+                credentials: "include",
+            }
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+            setUser(data.user.firstname);
+            console.log(data.user.firstname);
         } else {
-            Cookies.remove("token");
+            // no user
         }
+    }
+
+    const refreshUser = async () => {
+        await fetchUser();
     };
 
+    // get user
     useEffect(() => {
-        const cookieToken = Cookies.get("token");
-        if (cookieToken) {
-            setTokenState(cookieToken);
-        }
+        fetchUser();
     }, []);
 
     return (
-        <AuthContext.Provider value={{ token, setToken }}>
+        <AuthContext.Provider value={{ user, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );
