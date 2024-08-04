@@ -6,6 +6,9 @@ import {
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/context/auth";
+import UserAvatar from "../user/UserAvatar";
+import NavbarProfile from "./NavbarProfile";
 
 interface NavMenuItem {
     label: string;
@@ -35,14 +38,9 @@ const primaryNavMenuItems: NavMenuItem[] = [
     },
 ];
 
-const rightNavMenuItems: NavMenuItem[] = [
-    {
-        label: "Login",
-        route: "/auth/login",
-    },
-];
-
 export default function Navbar() {
+    const { user } = useAuth();
+
     return (
         <div className="relative mb-5 h-20 w-full border-b-2 border-b-neutral-400">
             <div className="flex h-full w-full items-center justify-center">
@@ -63,21 +61,23 @@ export default function Navbar() {
                 </NavigationMenu>
             </div>
             <div className="absolute right-5 top-1/2 -translate-y-1/2">
-                <NavigationMenu>
-                    <NavigationMenuList>
-                        {rightNavMenuItems.map((item, index) => (
-                            <NavigationMenuItem key={index}>
-                                <Link to={item.route}>
+                {user ? (
+                    <NavbarProfile user={user} />
+                ) : (
+                    <NavigationMenu>
+                        <NavigationMenuList>
+                            <NavigationMenuItem>
+                                <Link to="/auth/login">
                                     <NavigationMenuLink
                                         className={navigationMenuTriggerStyle()}
                                     >
-                                        {item.label}
+                                        "Login"
                                     </NavigationMenuLink>
                                 </Link>
                             </NavigationMenuItem>
-                        ))}
-                    </NavigationMenuList>
-                </NavigationMenu>
+                        </NavigationMenuList>
+                    </NavigationMenu>
+                )}
             </div>
         </div>
     );
