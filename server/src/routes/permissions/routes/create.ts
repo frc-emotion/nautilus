@@ -1,6 +1,7 @@
 import { prisma } from "../../..";
+import { Request, Response } from "express";
 
-const createPermission = async (req, res) => {
+const createPermission = async (req: Request, res: Response) => {
     try {
         const { name, description, category } = req.body;
 

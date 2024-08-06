@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/auth";
-import UserAvatar from "../user/UserAvatar";
 import NavbarProfile from "./NavbarProfile";
 
 interface NavMenuItem {
@@ -71,7 +70,7 @@ export default function Navbar() {
                                     <NavigationMenuLink
                                         className={navigationMenuTriggerStyle()}
                                     >
-                                        "Login"
+                                        Login
                                     </NavigationMenuLink>
                                 </Link>
                             </NavigationMenuItem>

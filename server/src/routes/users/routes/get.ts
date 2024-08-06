@@ -1,5 +1,7 @@
 import { prisma } from "../../../index";
 import { Request, Response } from "express";
+import { UserNoPassword } from "../models";
+import { Role, UserRole } from "@prisma/client";
 
 const getAllUsers = async (req: Request, res: Response) => {
     try {
@@ -28,4 +30,26 @@ const getUserById = async (req: Request, res: Response) => {
     }
 };
 
-export { getAllUsers, getUserById };
+const getMe = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.user!; // force
+        const dbUser = await prisma.user.findUniqueOrThrow({
+            where: {
+                id: id,
+            },
+            include: {
+                roles: true,
+            },
+        });
+        const {
+            password,
+            roles,
+            ...user
+        }: { password: string; roles: UserRole[] } & UserNoPassword = dbUser;
+        res.status(200).send({ user });
+    } catch (err) {
+        res.status(404).send({ message: "User not found!" });
+    }
+};
+
+export { getAllUsers, getUserById, getMe };

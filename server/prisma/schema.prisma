@@ -41,6 +41,7 @@ model Role {
   name           String
   users          UserRole[]
   RolePermission RolePermission[]
+  allowChanges   Boolean
 }
 
 model UserRole {
@@ -145,6 +146,7 @@ model User {
   lastname              String
   phone                 String                 @unique
   password              String
+  icon                  String?
   bio                   String?
   tagline               String?
   gradYear              Int?

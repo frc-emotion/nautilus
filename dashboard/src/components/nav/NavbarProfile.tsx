@@ -8,6 +8,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import UserAvatar from "../user/UserAvatar";
+import LogoutButton from "./LogoutButton";
 
 export default function NavbarProfile({ user }: { user: UserNoPassword }) {
     return (
@@ -20,8 +21,9 @@ export default function NavbarProfile({ user }: { user: UserNoPassword }) {
                     <DropdownMenuLabel>{`${user.firstname} ${user.lastname}`}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="text-red-600 font-bold">
-                        Logout
+                        {/* Logout */}
                         {/* TODO: Handle logout */}
+                        <LogoutButton />
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

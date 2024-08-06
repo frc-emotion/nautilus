@@ -1,6 +1,7 @@
 import { prisma } from "../../..";
 import { Request, Response } from "express";
 import { generateToken } from "../helpers";
+import validateEmail from "../helpers/validateEmail";
 import bcrypt from "bcrypt";
 
 const register = async (req: Request, res: Response) => {
@@ -11,12 +12,44 @@ const register = async (req: Request, res: Response) => {
         return res.status(400).json({ message: "Please fill out all fields" });
     }
 
-    // require unique email, username, phone
-    if (await prisma.user.findUnique({ where: { email } })) {
-        return res.status(400).json({ message: "Email is already in use" });
+    if (!validateEmail(email)) {
+        const msg = "Invalid email address";
+        return res
+            .status(400)
+            .json({ message: msg, fields: [{ name: "email", message: msg }] });
     }
-    if (await prisma.user.findUnique({ where: { phone } })) {
-        return res.status(400).json({ message: "Phone is already in use" });
+
+    // require unique email, username, phone
+    const existingUser = await prisma.user.findFirst({
+        where: {
+            OR: [{ email }, { phone }, { username }],
+        },
+    });
+
+    if (existingUser) {
+        let errorMessage = [];
+        if (existingUser.email === email) {
+            errorMessage.push({
+                name: "email",
+                message: "Email is already in use",
+            });
+        }
+        if (existingUser.phone === phone) {
+            errorMessage.push({
+                name: "phone",
+                message: "Phone number is already in use",
+            });
+        }
+        if (existingUser.username === username) {
+            errorMessage.push({
+                name: "username",
+                message: "Username is already in use",
+            });
+        }
+
+        return res
+            .status(400)
+            .json({ message: "User is not unique", fields: errorMessage });
     }
 
     // attempt to create user & return

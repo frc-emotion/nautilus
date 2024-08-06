@@ -38,9 +38,8 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
         if (response.ok) {
             setUser(data.user as UserNoPassword);
-            console.log(data.user);
         } else {
-            // no user
+            setUser(null);
         }
     }
 

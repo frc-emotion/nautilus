@@ -2,6 +2,8 @@ import { prisma } from "../../../index";
 import { Request, Response } from "express";
 import { generateToken, validateEmail } from "../helpers";
 import bcrypt from "bcrypt";
+import { TokenUser, UserNoPassword } from "../models";
+import { cookieOptions } from "../../../cookies";
 
 const login = async (req: Request, res: Response) => {
     try {
@@ -16,14 +18,12 @@ const login = async (req: Request, res: Response) => {
 
         // check if username is an email
         if (validateEmail(username)) {
-            console.log("email");
             user = await prisma.user.findUnique({
                 where: {
                     email: username,
                 },
             });
         } else {
-            console.log("username");
             user = await prisma.user.findUnique({
                 where: {
                     username,
@@ -42,7 +42,7 @@ const login = async (req: Request, res: Response) => {
         if (!passwordMatch) {
             return res
                 .status(400)
-                .json({ message: "Invalid username or password" });
+                .send({ message: "Invalid username or password" });
         } else {
             // check if rehash needed, then find and update
             const rounds = 12; // bcrypt rounds used when hashing the password
@@ -60,11 +60,14 @@ const login = async (req: Request, res: Response) => {
                 });
             }
 
-            user = user as any;
-            delete user.password;
-            // generate jwt and return user
-            user.token = generateToken(user.id);
-            return res.status(200).json(user);
+            user = user as UserNoPassword as TokenUser;
+            // TODO: refresh token
+            // generate access and return user
+            user.accessToken = generateToken(user.id);
+            return res
+                .status(200)
+                .cookie("token", user.accessToken, cookieOptions())
+                .send({ user });
         }
     } catch (error) {
         return res
