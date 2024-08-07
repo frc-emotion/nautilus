@@ -29,7 +29,7 @@ const primaryNavMenuItems: NavMenuItem[] = [
     },
     {
         label: "Directory",
-        route: "/",
+        route: "/directory",
     },
     {
         label: "Settings",

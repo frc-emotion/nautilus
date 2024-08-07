@@ -6,7 +6,7 @@ import { Role, UserRole } from "@prisma/client";
 const getAllUsers = async (req: Request, res: Response) => {
     try {
         const users = await prisma.user.findMany();
-        res.status(200).json(users);
+        res.status(200).send({ users }).end();
     } catch (err) {
         res.status(404).json({
             message: "No users found",
