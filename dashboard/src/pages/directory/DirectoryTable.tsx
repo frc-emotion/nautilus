@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-// import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import { UserNoPassword } from "@/context/auth";
 import { Loader2, MoreHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -35,9 +34,13 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import { useAuth } from "@/context/auth";
+
+// NOTE: This table does not currently allow you to delete the user that is currently logged in.
 
 export default function DirectoryTable() {
     const [data, setData] = useState<UserNoPassword[]>([]);
+    const { user: currentUser } = useAuth(); // temporary
 
     useEffect(() => {
         async function fetchUsers() {
@@ -136,15 +139,20 @@ export default function DirectoryTable() {
                                 >
                                     Edit User
                                 </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                    className="font-bold text-red-600"
-                                    onClick={() => {
-                                        setConfirmDeleteOpen(true);
-                                    }}
-                                >
-                                    Delete
-                                </DropdownMenuItem>
+
+                                {currentUser?.id === user.id ? null : (
+                                    <>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem
+                                            className="font-bold text-red-600"
+                                            onClick={() => {
+                                                setConfirmDeleteOpen(true);
+                                            }}
+                                        >
+                                            Delete
+                                        </DropdownMenuItem>
+                                    </>
+                                )}
                             </DropdownMenuContent>
                         </DropdownMenu>
                         <Dialog
