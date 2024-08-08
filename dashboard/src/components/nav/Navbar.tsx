@@ -47,13 +47,12 @@ export default function Navbar() {
                     <NavigationMenuList>
                         {primaryNavMenuItems.map((item, index) => (
                             <NavigationMenuItem key={index}>
-                                <Link to={item.route}>
-                                    <NavigationMenuLink
-                                        className={navigationMenuTriggerStyle()}
-                                    >
-                                        {item.label}
-                                    </NavigationMenuLink>
-                                </Link>
+                                <NavigationMenuLink
+                                    className={navigationMenuTriggerStyle()}
+                                    asChild
+                                >
+                                    <Link to={item.route}>{item.label}</Link>
+                                </NavigationMenuLink>
                             </NavigationMenuItem>
                         ))}
                     </NavigationMenuList>
@@ -66,13 +65,12 @@ export default function Navbar() {
                     <NavigationMenu>
                         <NavigationMenuList>
                             <NavigationMenuItem>
-                                <Link to="/auth/login">
-                                    <NavigationMenuLink
-                                        className={navigationMenuTriggerStyle()}
-                                    >
-                                        Login
-                                    </NavigationMenuLink>
-                                </Link>
+                                <NavigationMenuLink
+                                    className={navigationMenuTriggerStyle()}
+                                    asChild
+                                >
+                                    <Link to="/auth/login">Login</Link>
+                                </NavigationMenuLink>
                             </NavigationMenuItem>
                         </NavigationMenuList>
                     </NavigationMenu>
