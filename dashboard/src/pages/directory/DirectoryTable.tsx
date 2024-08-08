@@ -1,11 +1,20 @@
-import { UserNoPassword } from "@/context/auth";
 import {
     ColumnDef,
+    SortingState,
     flexRender,
     getCoreRowModel,
     getPaginationRowModel,
+    getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import {
     Table,
     TableBody,
@@ -15,93 +24,92 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { useState } from "react";
+// import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
+import { UserNoPassword } from "@/context/auth";
 import { MoreHorizontal } from "lucide-react";
+import LogoutButton from "@/components/nav/LogoutButton";
+import UserAvatar from "@/components/user/UserAvatar";
 
 interface DataTableProps<TData, TValue> {
     data: TData[];
     columns: ColumnDef<TData, TValue>[];
+    className?: string;
 }
 
-export const columns = ({
-    lastNameFirst,
-}: {
-    lastNameFirst: boolean;
-}): ColumnDef<UserNoPassword>[] => {
-    return [
-        {
-            header: "Name",
-            cell: ({ row }) => {
-                const user = row.original;
+export const columns: ColumnDef<UserNoPassword>[] = [
+    {
+        accessorKey: "firstname",
+        header: "First Name",
+    },
+    {
+        accessorKey: "lastname",
+        header: "Last Name",
+    },
+    {
+        accessorKey: "email",
+        header: "Email",
+    },
+    {
+        accessorKey: "phone",
+        header: "Phone",
+    },
+    {
+        id: "actions",
+        cell: ({ row }) => {
+            const user = row.original;
 
-                return lastNameFirst
-                    ? `${user.lastname}, ${user.firstname}`
-                    : `${user.firstname} ${user.lastname}`;
-            },
+            return (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem
+                            onClick={() =>
+                                navigator.clipboard.writeText(user.id)
+                            }
+                        >
+                            Copy User ID
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>View Profile</DropdownMenuItem>
+                        <DropdownMenuItem>Edit User</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-red-600 font-bold">Delete</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            );
         },
-        {
-            accessorKey: "email",
-            header: "Email",
-        },
-        {
-            accessorKey: "phone",
-            header: "Phone",
-        },
-        {
-            id: "actions",
-            cell: ({ row }) => {
-                const user = row.original;
-
-                return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Open menu</span>
-                                <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>{`${user.firstname} ${user.lastname}`}</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>View Profile</DropdownMenuItem>
-                            {/* <DropdownMenuItem>Send Message</DropdownMenuItem> */}
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>Attendance</DropdownMenuItem>
-                            <DropdownMenuItem>Scouting</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>Edit User</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="font-bold text-red-600">
-                                Delete
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                );
-            },
-        },
-    ];
-};
+    },
+];
 
 export default function DirectoryTable<TData, TValue>({
     data,
     columns,
+    className,
 }: DataTableProps<TData, TValue>) {
+    const [sorting, setSorting] = useState<SortingState>([]);
+
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
+        onSortingChange: setSorting,
+        getSortedRowModel: getSortedRowModel(),
+
+        state: {
+            sorting,
+        },
     });
 
     return (
-        <div>
+        <div className={className}>
             <div className="rounded-md border">
                 <Table>
                     <TableHeader>

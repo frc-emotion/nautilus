@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 
 export default function Directory() {
     const [userList, setUserList] = useState([]);
-    const [lastNameFirst, setLastNameFirst] = useState(true);
 
     useEffect(() => {
         async function fetchUsers() {
@@ -33,7 +32,10 @@ export default function Directory() {
         <>
             <PageTitle title="Directory" />
             <Navbar />
-            <DirectoryTable data={userList} columns={columns({ lastNameFirst: lastNameFirst })} />
+            <DirectoryTable
+                data={userList}
+                columns={columns}
+            />
         </>
     );
 }
