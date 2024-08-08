@@ -22,7 +22,7 @@ const getUserById = async (req: Request, res: Response) => {
                 id: id,
             },
         });
-        res.status(200).json(user);
+        res.status(200).send({ user }).end();
     } catch (err) {
         res.status(404).json({
             message: "User not found",

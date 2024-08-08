@@ -15,6 +15,7 @@ export type UserNoPassword = {
 interface AuthContextType {
     user: UserNoPassword | null;
     refreshUser: () => void;
+    loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -23,9 +24,11 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
     const [user, setUser] = useState<UserNoPassword | null>(null);
+    const [loading, setLoading] = useState(true);
 
     async function fetchUser() {
         console.log("fetching");
+        setLoading(true);
         const response = await fetch(
             `${import.meta.env.VITE_API_URL}/users/me`,
             {
@@ -41,6 +44,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         } else {
             setUser(null);
         }
+        setLoading(false);
     }
 
     const refreshUser = async () => {
@@ -53,7 +57,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, refreshUser }}>
+        <AuthContext.Provider value={{ user, refreshUser, loading }}>
             {children}
         </AuthContext.Provider>
     );

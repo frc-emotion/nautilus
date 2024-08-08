@@ -30,6 +30,7 @@ import { UserNoPassword } from "@/context/auth";
 import { MoreHorizontal } from "lucide-react";
 import LogoutButton from "@/components/nav/LogoutButton";
 import UserAvatar from "@/components/user/UserAvatar";
+import { Link } from "react-router-dom";
 
 interface DataTableProps<TData, TValue> {
     data: TData[];
@@ -77,10 +78,15 @@ export const columns: ColumnDef<UserNoPassword>[] = [
                             Copy User ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>View Profile</DropdownMenuItem>
+                        <Link to={`/user/${user.id}`}>
+                            <DropdownMenuItem>View Profile</DropdownMenuItem>
+                        </Link>
+
                         <DropdownMenuItem>Edit User</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600 font-bold">Delete</DropdownMenuItem>
+                        <DropdownMenuItem className="font-bold text-red-600">
+                            Delete
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             );
