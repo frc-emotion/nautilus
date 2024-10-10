@@ -1,81 +1,37 @@
-# Turborepo starter
+# Nautilus
 
-This is an official starter Turborepo.
+> [!WARNING]
+> Nautilus is currently in early stage development. Features may be missing and backwards compatibility is not guaranteed in future versions.
 
-## Using this example
+Nautilus is a native scouting and attendance solution for FIRST Robotics Competition teams.
 
-Run the following command:
+## Getting Started
+
+> [!NOTE]
+> Temporary section, replace later in proper documentation
+
+Important note before we begin: This repository is a [monorepo](https://turbo.build/repo/docs). Currently, our projects (frontend and backend) are both under the `apps` folder. Our frontend React Native project is named `mobile` and our backend is named `server`. A monorepo allows us to install and manage dependencies easily, and will allow for build caching down the line, giving us faster build and development times. This structure may be unfamiliar. If confusing, please read up on monorepo documentation.
+
+**Install these:**
+
+Main dependencies: NodeJS, Typescript, PNPM (necessary for workspaces), Visual Studio Code, Git, PostgreSQL
+
+Also: make sure you have Android Studio installed, or XCode if you have a Mac and want to test on iPhone. For Xcode, ensure your Mac supports the latest version of macOS.
+
+Ensure you install the Android Emulator for Android Studio, or an iPhone Simulator if developing on Xcode. If these are not working on your machine, a testing environment can be run in your browser, however this is not ideal as it does not simulate a native phone environment.
+
+Once you have everything installed, clone the repository by running:
 
 ```sh
-npx create-turbo@latest
+git clone https://github.com/frc-emotion/nautilus.git
 ```
 
-## What's inside?
+You may be prompted to enter authentication details. For this, you may need to generate a Personal Access Token to use as your GitHub Password. See [here](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) if you need instructions.
 
-This Turborepo includes the following packages/apps:
+Once the repository is successfully cloned onto your machine, install all necessary dependencies by running:
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+```sh
+pnpm install
 ```
 
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+After you have completed these steps, your development environment should be fully set up, making you ready for development and writing your first contribution.
