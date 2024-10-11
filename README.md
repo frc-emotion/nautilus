@@ -14,7 +14,7 @@ Important note before we begin: This repository is a [monorepo](https://turbo.bu
 
 **Install these:**
 
-Main dependencies: NodeJS, Typescript, PNPM (necessary for workspaces), Visual Studio Code, Git, PostgreSQL
+Main dependencies: NodeJS, Python, PNPM (necessary for workspaces), Visual Studio Code, Git
 
 Also: make sure you have Android Studio installed, or XCode if you have a Mac and want to test on iPhone. For Xcode, ensure your Mac supports the latest version of macOS.
 
